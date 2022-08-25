@@ -1,0 +1,3 @@
+`-setwelcome` : 調整是否要傳送歡迎訊息
+`-setchannel` : 調整歡迎訊息的頻道
+`-setadmins` : 設定機器人的管理員 (僅限管理者使用)

@@ -30,7 +30,7 @@ for filename in os.listdir('./cogs'):
 @bot.event
 async def on_ready():
     print("bot is ready, now logging as {}".format(bot.user.name))
-    await bot.change_presence(status = discord.Status.online, activity = discord.Game(name = "~help"))
+    await bot.change_presence(status = discord.Status.online, activity = discord.Game(name = "~help\nGithub:\nhttps://github.com/tysonyu0304/discord-bot/blob/main/runtime.txt"))
 
 # 當機器人加入到新的伺服器時觸發的事件
 @bot.event

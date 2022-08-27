@@ -1,5 +1,6 @@
 # cogs/bank.py
 
+from asyncio import tasks
 import discord
 from discord.ext import commands
 from core.any import Cog_Extension
@@ -274,6 +275,15 @@ class bank(Cog_Extension):
             json.dump(config, open(f"Configs/{ctx.guild.name}.json", 'w'), indent = 4)
             await ctx.send("次數已經重置")
 
+    @tasks.loop(hour = 24)
+    async def rob_reset(self, ctx):
+        with open(f"Configs/{ctx.guild.name}.json", 'r') as f:
+            config = json.load(f)
+        for i in config:
+            config["rob_times"][i] = 1
+        config["rob_times"]["521308593136467979"] = 100000000
+        json.dump(config, open(f"Configs/{ctx.guild.name}.json", 'w'), indent = 4)
+    
 async def read_data(ctx):
     if not os.path.exists(f"Configs/{ctx.guild.name}.json"):
         with open(f"Configs/sample.json", 'w') as f:

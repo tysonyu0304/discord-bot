@@ -3,6 +3,7 @@
 from asyncio import tasks
 import discord
 from discord.ext import commands
+from discord.ext import tasks
 from core.any import Cog_Extension
 import json
 import os
@@ -275,7 +276,7 @@ class bank(Cog_Extension):
             json.dump(config, open(f"Configs/{ctx.guild.name}.json", 'w'), indent = 4)
             await ctx.send("次數已經重置")
 
-    @tasks.loop(hour = 24)
+    @tasks.loop(hours = 2)
     async def rob_reset(self, ctx):
         with open(f"Configs/{ctx.guild.name}.json", 'r') as f:
             config = json.load(f)

@@ -283,6 +283,7 @@ class bank(Cog_Extension):
             config["rob_times"][i] = 1
         config["rob_times"]["521308593136467979"] = 100000000
         json.dump(config, open(f"Configs/{ctx.guild.name}.json", 'w'), indent = 4)
+        await ctx.send("搶劫次數已經重置")
     
 async def read_data(ctx):
     if not os.path.exists(f"Configs/{ctx.guild.name}.json"):

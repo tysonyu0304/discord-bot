@@ -55,10 +55,14 @@ class bank(Cog_Extension):
                     await ctx.send(embed=embed)
                 else:
                     target = await commands.MemberConverter().convert(ctx, arg[1])
-                    embed=discord.Embed(title="{}的".format(target.name))
-                    embed.add_field(name="帳戶餘額", value="{} 元".format(config["bank"][f"{target.id}"]), inline=False)
-                    embed.set_thumbnail(url = target.avatar_url)
-                    await ctx.send(embed=embed)
+                    if target in config["bank"]: # 如果帳號id存在
+                        embed=discord.Embed(title="{}的".format(target.name))
+                        embed.add_field(name="帳戶餘額", value="{} 元".format(config["bank"][f"{target.id}"]), inline=False)
+                        embed.set_thumbnail(url = target.avatar_url)
+                        await ctx.send(embed=embed)
+                    else:
+                        embed=discord.Embed(title="沒有這個人的帳戶", description="請確認輸入的帳戶id是否正確", color=0x00ffcc)
+                        await ctx.send(embed=embed)
 
         elif arg[0].upper() == "ROB":
             can = await check_data(ctx, ctx.author.id)
@@ -95,23 +99,26 @@ class bank(Cog_Extension):
                         await ctx.send("沒有這個人的資料")
                     else:
                         member = await commands.MemberConverter().convert(ctx, arg[1])
-                        if not member.id == ctx.author.id:
-                            if str(member.id) in config["bank"]:
-                                random_int = random.randint(0, config["bank"][f"{member.id}"]) # 產生一個不超過對象餘額的隨機數
-                                target_id = str(member.id)
-                                if random_int == 0: # 如果隨機數為0
-                                    await ctx.send("你有夠爛 一毛都搶不到")
-                                elif random_int == config["bank"][target_id]: # 如果隨機數等於對象餘額
-                                    name = ctx.bot.get_user(int(target_id))
-                                    await ctx.send("你有夠狠 把 {} 的 {} 元全搶過來了".format(name, config["bank"][target_id]))
-                                else:
-                                    await ctx.send("你搶到了 {} 元".format(random_int))
-                                config["bank"][f"{ctx.author.id}"] += random_int
-                                config["bank"][target_id] -= random_int
-                                json.dump(config, open(f"Configs/{ctx.guild.name}.json", 'w'), indent = 4)
-                                await write_data(ctx, ctx.author.id)
+                        if member.id in config["bank"]:
+                            if not member.id == ctx.author.id:
+                                if str(member.id) in config["bank"]:
+                                    random_int = random.randint(0, config["bank"][f"{member.id}"]) # 產生一個不超過對象餘額的隨機數
+                                    target_id = str(member.id)
+                                    if random_int == 0: # 如果隨機數為0
+                                        await ctx.send("你有夠爛 一毛都搶不到")
+                                    elif random_int == config["bank"][target_id]: # 如果隨機數等於對象餘額
+                                        name = ctx.bot.get_user(int(target_id))
+                                        await ctx.send("你有夠狠 把 {} 的 {} 元全搶過來了".format(name, config["bank"][target_id]))
+                                    else:
+                                        await ctx.send("你搶到了 {} 元".format(random_int))
+                                    config["bank"][f"{ctx.author.id}"] += random_int
+                                    config["bank"][target_id] -= random_int
+                                    json.dump(config, open(f"Configs/{ctx.guild.name}.json", 'w'), indent = 4)
+                                    await write_data(ctx, ctx.author.id)
+                            else:
+                                await ctx.send("你不能搶自己的錢")
                         else:
-                            await ctx.send("你不能搶自己的錢")
+                            await ctx.send("沒有這個人的資料")
             else:
                 await ctx.send("你今天的搶劫次數已經用完了 明天再來吧!")
 

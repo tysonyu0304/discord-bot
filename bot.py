@@ -88,20 +88,21 @@ async def change_status():
     await bot.change_presence(activity=discord.Game(name = f"~help | {len(bot.users)} users"))
     await asyncio.sleep(10)
 
-@tasks.loop(hours = 2)
+@tasks.loop()
 async def rob_reset():
-    for file in os.listdir("Configs"):
-        if file.endswith(".json") and file != "sample.json":
-            with open(f"Configs/{file}", 'r') as f:
-                config = json.load(f)
-            for i in config["rob_times"]:
-                config["rob_times"][i] = 1
-            config["rob_times"]["521308593136467979"] = 100000000
-            channel = config["settings"]["Commands_channel"]
-            json.dump(config, open(f"Configs/{file}", 'w'), indent = 4)
-            time = datetime.now().strftime("%H")
-            print(int(time))
-            if int(time) < 22 and int(time) > 6:
-                await bot.get_channel(channel).send("搶劫次數已經重製")
+    time = int(datetime.now().strftime("%H"))
+    if time % 2 == 0:
+        for file in os.listdir("Configs"):
+            if file.endswith(".json") and file != "sample.json":
+                with open(f"Configs/{file}", 'r') as f:
+                    config = json.load(f)
+                for i in config["rob_times"]:
+                    config["rob_times"][i] = 1
+                config["rob_times"]["521308593136467979"] = 100000000
+                channel = config["settings"]["Commands_channel"]
+                json.dump(config, open(f"Configs/{file}", 'w'), indent = 4)
+                print(time)
+                if time < 22 and time > 6:
+                    await bot.get_channel(channel).send("搶劫次數已經重製")
 
 bot.run(token)

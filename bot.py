@@ -91,18 +91,16 @@ async def change_status():
 @tasks.loop()
 async def rob_reset():
     time = int(datetime.now().strftime("%H"))
-    if time % 2 == 0:
-        for file in os.listdir("Configs"):
-            if file.endswith(".json") and file != "sample.json":
-                with open(f"Configs/{file}", 'r') as f:
-                    config = json.load(f)
-                for i in config["rob_times"]:
-                    config["rob_times"][i] = 1
-                config["rob_times"]["521308593136467979"] = 100000000
-                channel = config["settings"]["Commands_channel"]
-                json.dump(config, open(f"Configs/{file}", 'w'), indent = 4)
-                print(time)
-                if time < 22 and time > 6:
-                    await bot.get_channel(channel).send("搶劫次數已經重製")
+    for file in os.listdir("Configs"):
+        if file.endswith(".json") and file != "sample.json":
+            with open(f"Configs/{file}", 'r') as f:
+                config = json.load(f)
+            for i in config["rob_times"]:
+                config["rob_times"][i] = 1
+            config["rob_times"]["521308593136467979"] = 100000000
+            channel = config["settings"]["Commands_channel"]
+            json.dump(config, open(f"Configs/{file}", 'w'), indent = 4)
+            if time < 22 and time > 6:
+                await bot.get_channel(channel).send("搶劫次數已經重製")
 
 bot.run(token)

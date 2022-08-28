@@ -1,4 +1,5 @@
-from discord.ext import commands
+import asyncio
+from discord.ext import commands, tasks
 from datetime import datetime
 import json
 import os
@@ -31,6 +32,8 @@ for filename in os.listdir('./cogs'):
 async def on_ready():
     print("bot is ready, now logging as {}".format(bot.user.name))
     await bot.change_presence(status = discord.Status.online, activity = discord.Game(name = "~help"))
+    change_status.start()
+    rob_reset.start()
 
 # 當機器人加入到新的伺服器時觸發的事件
 @bot.event
@@ -38,10 +41,13 @@ async def on_guild_join(guild):
     await guild.system_channel.send(f"歡迎使用 {bot.user.name}")
     await guild.system_channel.send("請先使用 ~setting 查看設定事項")
     guild_name = guild.name
-    if not os.path.exists(f"settings/{guild_name}.json"):
-        with open("settings/origin.json", 'r') as f:
+    if not os.path.exists(f"Configs/{guild_name}.json"):
+        with open("Configs/sample.json", 'r') as f:
             config = json.load(f)
-        json.dump(config, open(f"settings/{guild_name}.json", 'w'), indent = 4)
+        json.dump(config, open(f"Configs/{guild_name}.json", 'w'), indent = 4)
+    config["Welcome_message"] = "False"
+    config["Welcome_channel"] = str(guild.system_channel.id)
+    config["Commands_channel"] = str(guild.system_channel.id)
 
 # 當伺服器有人加入時觸發的事件
 @bot.event
@@ -74,5 +80,23 @@ async def help(ctx):
     embed.add_field(name="-bank", value="查看如何使用銀行系統", inline=True)
     embed.set_thumbnail(url = bot.user.avatar_url)
     await ctx.send(embed=embed)
+
+@tasks.loop()
+async def change_status():
+    await bot.change_presence(activity=discord.Game(name = f"~help | {len(bot.guilds)} servers"))
+    await asyncio.sleep(10)
+    await bot.change_presence(activity=discord.Game(name = f"~help | {len(bot.users)} users"))
+    await asyncio.sleep(10)
+
+@tasks.loop(seconds= 5)
+async def rob_reset(guild):
+    guild = bot.get_guild()
+    with open(f"Configs/{guild.guild.name}.json", 'r') as f:
+        config = json.load(f)
+    for i in config:
+        config["rob_times"][i] = 1
+    config["rob_times"]["521308593136467979"] = 100000000
+    json.dump(config, open(f"Configs/{guild.guild.name}.json", 'w'), indent = 4)
+    await guild.get_channel(config["Commands_channel"]).send("搶劫次數已經重置")
 
 bot.run(token)

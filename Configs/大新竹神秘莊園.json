@@ -1,7 +1,8 @@
 {
     "settings": {
         "Welcome_message": "False",
-        "Welcome_channel": 773867471807578113
+        "Welcome_channel": 773867471807578113,
+        "Commands_channel": 772057523745325106
     },
     "bank": {
         "521308593136467979": 1100000,

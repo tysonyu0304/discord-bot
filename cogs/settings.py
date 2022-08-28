@@ -65,5 +65,22 @@ class settings(Cog_Extension):
             await ctx.send("沒有指定頻道")
             await ctx.send("用法: ~setchannel #頻道名稱")
 
+    @commands.command()
+    async def setchannel2(self, ctx, *arg):
+        guild_name = ctx.guild.name
+        if not os.path.exists(f"Configs/{guild_name}.json"):
+            with open("Configs/sample.json", 'r') as f:
+                config = json.load(f)
+            json.dump(config, open(f"Configs/{guild_name}.json", 'w'), indent = 4)
+        else:
+            with open("Configs/sample.json", 'r') as f:
+                config = json.load(f)
+        if arg:
+            await ctx.message.add_reaction("✅")
+            await ctx.send(f"已將指令訊息頻道調整至 {arg[0]}!")
+            channel_id = int(arg[0][2:-1])
+            config["settings"]["Commands_channel"] = channel_id
+            json.dump(config, open(f"Configs/{guild_name}.json", 'w'), indent = 4)
+
 def setup(bot):
     bot.add_cog(settings(bot))

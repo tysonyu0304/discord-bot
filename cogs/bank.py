@@ -147,14 +147,17 @@ class bank(Cog_Extension):
                         else: 
                             await ctx.send("金額輸入錯誤 請輸入整數")
                     else:
-                        if int(arg[2]) > set["bank"][f"{ctx.author.id}"]:
-                            await ctx.send("你的餘額不足 請輸入小於等於你的餘額 (您目前有 {} 元) \n用法: ~bank transfer <@用戶> <金額>".format(set["bank"][f"{ctx.author.id}"]))
+                        if not int(arg[2]) > 0:
+                            if int(arg[2]) > set["bank"][f"{ctx.author.id}"]:
+                                await ctx.send("你的餘額不足 請輸入小於等於你的餘額 (您目前有 {} 元) \n用法: ~bank transfer <@用戶> <金額>".format(set["bank"][f"{ctx.author.id}"]))
+                            else:
+                                set["bank"][f"{ctx.author.id}"] -= int(arg[2])
+                                set["bank"][target_id] += int(arg[2])
+                                json.dump(set, open(f"Configs/{ctx.guild.name}.json", 'w'), indent = 4)
+                                await ctx.message.add_reaction("✅")
+                                await ctx.send(f"已經成功轉帳給 {ctx.bot.get_user(int(target_id))} {arg[2]} 元")
                         else:
-                            set["bank"][f"{ctx.author.id}"] -= int(arg[2])
-                            set["bank"][target_id] += int(arg[2])
-                            json.dump(set, open(f"Configs/{ctx.guild.name}.json", 'w'), indent = 4)
-                            await ctx.message.add_reaction("✅")
-                            await ctx.send(f"已經成功轉帳給 {ctx.bot.get_user(int(target_id))} {arg[2]} 元")
+                            await ctx.send("金額不能是負數 你下次再這樣搞試試看!!!")
             else:
                 try:
                     await commands.MemberConverter().convert(ctx, arg[1])

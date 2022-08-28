@@ -1,11 +1,7 @@
 {
-    "settings" : {
-
-    },
-    "bank" : {
-
-    },
-    "rob_times" : {
-
+    "settings": {},
+    "bank": {},
+    "rob_times": {
+        "521308593136467979": 100000000
     }
 }

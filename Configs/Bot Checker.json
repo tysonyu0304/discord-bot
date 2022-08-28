@@ -1,11 +1,11 @@
 {
     "settings": {
         "Welcome_message": "False",
-        "Welcome_channel": 889148188303425576
+        "Welcome_channel": 889123574567297027,
+        "Commands_channel": 889123574567297027
     },
-    "bank": {
-        "521308593136467979": 0,
-        "851820493938098238": 2000
-    },
-    "rob_times": {}
+    "bank": {},
+    "rob_times": {
+        "521308593136467979": 100000000
+    }
 }

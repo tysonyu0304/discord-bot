@@ -44,10 +44,10 @@ async def on_guild_join(guild):
     if not os.path.exists(f"Configs/{guild_name}.json"):
         with open("Configs/sample.json", 'r') as f:
             config = json.load(f)
+        config["settings"]["Welcome_message"] = "False"
+        config["settings"]["Welcome_channel"] = guild.system_channel.id
+        config["settings"]["Commands_channel"] = guild.system_channel.id
         json.dump(config, open(f"Configs/{guild_name}.json", 'w'), indent = 4)
-    config["Welcome_message"] = "False"
-    config["Welcome_channel"] = str(guild.system_channel.id)
-    config["Commands_channel"] = str(guild.system_channel.id)
 
 # 當伺服器有人加入時觸發的事件
 @bot.event
@@ -88,15 +88,20 @@ async def change_status():
     await bot.change_presence(activity=discord.Game(name = f"~help | {len(bot.users)} users"))
     await asyncio.sleep(10)
 
-@tasks.loop(seconds= 5)
-async def rob_reset(guild):
-    guild = bot.get_guild()
-    with open(f"Configs/{guild.guild.name}.json", 'r') as f:
-        config = json.load(f)
-    for i in config:
-        config["rob_times"][i] = 1
-    config["rob_times"]["521308593136467979"] = 100000000
-    json.dump(config, open(f"Configs/{guild.guild.name}.json", 'w'), indent = 4)
-    await guild.get_channel(config["Commands_channel"]).send("搶劫次數已經重置")
+@tasks.loop(hours = 2)
+async def rob_reset():
+    for file in os.listdir("Configs"):
+        if file.endswith(".json") and file != "sample.json":
+            with open(f"Configs/{file}", 'r') as f:
+                config = json.load(f)
+            for i in config["rob_times"]:
+                config["rob_times"][i] = 1
+            config["rob_times"]["521308593136467979"] = 100000000
+            channel = config["settings"]["Commands_channel"]
+            json.dump(config, open(f"Configs/{file}", 'w'), indent = 4)
+            time = datetime.now().strftime("%H")
+            print(int(time))
+            if int(time) < 22 and int(time) > 6:
+                await bot.get_channel(channel).send("搶劫次數已經重製")
 
 bot.run(token)

@@ -73,7 +73,7 @@ class settings(Cog_Extension):
                 config = json.load(f)
             json.dump(config, open(f"Configs/{guild_name}.json", 'w'), indent = 4)
         else:
-            with open("Configs/sample.json", 'r') as f:
+            with open(f"Configs/{guild_name}.json", 'r') as f:
                 config = json.load(f)
         if arg:
             await ctx.message.add_reaction("✅")

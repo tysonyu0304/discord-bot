@@ -88,7 +88,7 @@ async def change_status():
     await bot.change_presence(activity=discord.Game(name = f"~help | {len(bot.users)} users"))
     await asyncio.sleep(10)
 
-@tasks.loop()
+@tasks.loop(hours = 2)
 async def rob_reset():
     time = int(datetime.now().strftime("%H"))
     for file in os.listdir("Configs"):
@@ -100,7 +100,8 @@ async def rob_reset():
             config["rob_times"]["521308593136467979"] = 100000000
             channel = config["settings"]["Commands_channel"]
             json.dump(config, open(f"Configs/{file}", 'w'), indent = 4)
-            if time < 22 and time > 6:
-                await bot.get_channel(channel).send("搶劫次數已經重製")
+            if time < 22:
+                if time > 6:
+                    await bot.get_channel(channel).send("搶劫次數已經重製")
 
 bot.run(token)

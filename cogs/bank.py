@@ -148,7 +148,7 @@ class bank(Cog_Extension):
                             await ctx.send("金額輸入錯誤 請輸入整數")
                     else:
                         if int(arg[2]) > set["bank"][f"{ctx.author.id}"]:
-                            await ctx.send("你的餘額不足 請輸入小於等於你的餘額 (您目前有 {} 元) /n用法: ~bank transfer <@用戶> <金額>".format(set["bank"][f"{ctx.author.id}"]))
+                            await ctx.send("你的餘額不足 請輸入小於等於你的餘額 (您目前有 {} 元) \n用法: ~bank transfer <@用戶> <金額>".format(set["bank"][f"{ctx.author.id}"]))
                         else:
                             set["bank"][f"{ctx.author.id}"] -= int(arg[2])
                             set["bank"][target_id] += int(arg[2])
